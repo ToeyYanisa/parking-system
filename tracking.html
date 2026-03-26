@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>ติดตามรถเข้าออก</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+table{
+margin:auto;
+border-collapse:collapse;
+width:70%;
+background:white;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+border-radius:10px;
+overflow:hidden;
+}
+
+th,td{
+padding:12px;
+text-align:center;
+}
+
+th{
+background:#34495e;
+color:white;
+font-size:18px;
+}
+
+tr:nth-child(even){
+background:#f2f2f2;
+}
+
+.in{
+color:#27ae60;
+font-weight:bold;
+}
+
+.out{
+color:#e74c3c;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h1>ติดตามรถเข้าออก</h1>
+</header>
+
+<nav>
+<a href="index.html">หน้าแรก</a>
+<a href="parking.html">สถานะที่จอด</a>
+<a href="tracking.html">ติดตามรถ</a>
+<a href="developer.html">ผู้พัฒนา</a>
+<a href="contact.html">ติดต่อ</a>
+</nav>
+
+<div class="container">
+
+<h2>ประวัติรถเข้าออก</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>ลำดับ</th>
+<th>ประเภท</th>
+<th>เวลา</th>
+</tr>
+</thead>
+
+<tbody id="logTable">
+</tbody>
+
+</table>
+
+</div>
+
+<!-- Firebase -->
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+databaseURL: "https://smart-parking-system1-a55f9-default-rtdb.asia-southeast1.firebasedatabase.app"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+
+const table = document.getElementById("logTable");
+
+db.ref("parking/history").on("value",(snapshot)=>{
+
+table.innerHTML="";
+
+let data=snapshot.val();
+
+if(!data){
+table.innerHTML="<tr><td colspan='3'>ยังไม่มีข้อมูล</td></tr>";
+return;
+}
+
+/* เรียงเวลาล่าสุดก่อน */
+
+let keys = Object.keys(data).reverse();
+
+let i=1;
+
+keys.forEach(key=>{
+
+let type=data[key].type
+let time=data[key].time
+
+let icon=""
+let className=""
+
+if(type==="IN"){
+icon="🚗 เข้า"
+className="in"
+}else{
+icon="🚙 ออก"
+className="out"
+}
+
+let row=`
+
+<tr>
+<td>${i}</td>
+<td class="${className}">${icon}</td>
+<td>${time}</td>
+</tr>
+
+`
+
+table.innerHTML += row
+
+i++
+
+})
+
+})
+
+</script>
+
+</body>
+</html>

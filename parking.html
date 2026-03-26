@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>สถานะที่จอดรถ</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+.parking-grid{
+display:grid;
+grid-template-columns:repeat(4,150px);
+gap:30px;
+justify-content:center;
+margin-top:40px;
+}
+
+.slot{
+width:150px;
+height:150px;
+border-radius:15px;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+color:white;
+font-size:22px;
+font-weight:bold;
+transition:all 0.5s ease;
+box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+.slot span{
+font-size:16px;
+margin-top:5px;
+}
+
+.free{
+background:linear-gradient(135deg,#2ecc71,#27ae60);
+animation:pulseGreen 2s infinite;
+}
+
+.full{
+background:linear-gradient(135deg,#e74c3c,#c0392b);
+animation:pulseRed 2s infinite;
+}
+
+@keyframes pulseGreen{
+0%{transform:scale(1)}
+50%{transform:scale(1.05)}
+100%{transform:scale(1)}
+}
+
+@keyframes pulseRed{
+0%{transform:scale(1)}
+50%{transform:scale(1.05)}
+100%{transform:scale(1)}
+}
+
+.available-box{
+margin-top:30px;
+font-size:22px;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h1>สถานะที่จอดรถ</h1>
+</header>
+
+<nav>
+<a href="index.html">หน้าแรก</a>
+<a href="parking.html">สถานะที่จอด</a>
+<a href="tracking.html">ติดตามรถ</a>
+<a href="developer.html">ผู้พัฒนา</a>
+<a href="contact.html">ติดต่อ</a>
+</nav>
+
+<div class="container">
+
+<h2>ที่จอดรถทั้งหมด 4 ช่อง</h2>
+
+<div class="available-box">
+ช่องว่างทั้งหมด : <span id="available">0</span>
+</div>
+
+<div class="parking-grid">
+
+<div id="slot1" class="slot">SLOT 1<br><span>Loading</span></div>
+<div id="slot2" class="slot">SLOT 2<br><span>Loading</span></div>
+<div id="slot3" class="slot">SLOT 3<br><span>Loading</span></div>
+<div id="slot4" class="slot">SLOT 4<br><span>Loading</span></div>
+
+</div>
+
+</div>
+
+<!-- Firebase -->
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+databaseURL: "https://smart-parking-system1-a55f9-default-rtdb.asia-southeast1.firebasedatabase.app"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+
+/* เปลี่ยนสถานะช่อง */
+
+function updateSlot(id,status){
+
+let el = document.getElementById(id)
+
+if(status === "OK"){
+
+el.className="slot free"
+el.innerHTML=id.toUpperCase()+"<span>ว่าง</span>"
+
+}else{
+
+el.className="slot full"
+el.innerHTML=id.toUpperCase()+"<span>เต็ม</span>"
+
+}
+
+}
+
+/* อ่านข้อมูล Firebase */
+
+db.ref("parking").on("value",(snapshot)=>{
+
+let data=snapshot.val()
+
+updateSlot("slot1",data.slot1)
+updateSlot("slot2",data.slot2)
+updateSlot("slot3",data.slot3)
+updateSlot("slot4",data.slot4)
+
+document.getElementById("available").innerText=data.available
+
+})
+
+</script>
+
+</body>
+</html>

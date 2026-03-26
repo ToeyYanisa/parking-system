@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+
+<meta charset="UTF-8">
+<title>Smart Parking</title>
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+button{
+padding:12px 25px;
+font-size:18px;
+background:#27ae60;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+margin-top:15px;
+}
+
+button:hover{
+background:#219150;
+}
+
+.control-box{
+margin-top:30px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h1>Smart Parking System</h1>
+</header>
+
+<nav>
+<a href="index.html">หน้าแรก</a>
+<a href="parking.html">สถานะที่จอด</a>
+<a href="tracking.html">ติดตามรถ</a>
+<a href="developer.html">ผู้พัฒนา</a>
+<a href="contact.html">ติดต่อ</a>
+</nav>
+
+<div class="container">
+
+<h2>ระบบตรวจสอบที่จอดรถอัจฉริยะ</h2>
+
+<p>สามารถดูสถานะที่จอดรถผ่านเว็บไซต์ได้แบบเรียลไทม์</p>
+
+<h3>สแกน QR Code เพื่อเข้าเว็บไซต์</h3>
+
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://sprightly-mermaid-8b376d.netlify.app/parking.html">
+
+<div class="control-box">
+
+<h2>ควบคุมไม้กั้น</h2>
+
+<button onclick="openGate()">🚗 เปิดไม้กั้น</button>
+
+</div>
+
+</div>
+
+<!-- Firebase -->
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+databaseURL: "https://smart-parking-system1-a55f9-default-rtdb.asia-southeast1.firebasedatabase.app"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+function openGate(){
+
+firebase.database().ref("control/gate").set(1);
+
+alert("กำลังเปิดไม้กั้น");
+
+}
+
+</script>
+
+</body>
+</html>
